@@ -27,16 +27,32 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['.amazon.com', '.aws.amazon.com', '.amazonaws.com']
 
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+        # The following apps are required:
     'django.contrib.auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # ... include the providers you want to enable:
+    'allauth.socialaccount.providers.google',
+    'django.contrib.admin',
+    #'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'myauthemail',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -75,8 +92,12 @@ WSGI_APPLICATION = 'Projects.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mikeaws',                      
+        'USER': 'mikeaws',
+        'PASSWORD': 'mikeaws',
+        'HOST': 'poodb.cpycw7yulmkz.us-east-2.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
@@ -99,6 +120,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# User substitution
+# https://docs.djangoproject.com/en/1.11/topics/auth/customizing/#auth-custom-user
+
+AUTH_USER_MODEL = 'myauthemail.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
